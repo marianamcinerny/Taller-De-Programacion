@@ -1,0 +1,106 @@
+programa ejercicio3
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras ((HayFlorEnLaEsquina) & (cantF < 10))
+      tomarFlor
+      cantF := cantF + 1
+  fin
+areas
+  areaDeposito : AreaC(10,10,10,10)
+  areaR1 : AreaP(1,3,100,3)
+  araeR2 : AreaP(1,4,100,4)
+  areaCosechador : AreaP(1,5,1,5)
+robots
+  robot tipoRecolector
+  variables
+    id, cantF, cantEsq : numero
+    listo : boolean
+  comenzar
+    cantF := 0
+    cantEsq := 0
+    listo := F
+    derecha
+    EnviarMensaje(listo,cosechador)
+    mientras (PosAv < 100)
+      mientras ((cantEsq < 5) & (cantF < 10))
+        juntarFlores(cantF)
+        si (~HayFlorEnLaEsquina)
+          mover
+          cantEsq := cantEsq + 1
+      si ((cantEsq = 5) | (cantF = 10))
+        repetir cantF
+          BloquearEsquina(10,10)
+          Pos(10,10)
+          depositarFlor
+          Pos(av,ca)
+          LiberarEsquina(10,10)
+        EnviarMensaje(id,cosechador)
+        EnviarMensaje(cantF,cosechador)
+        EnviarMensaje(listo,cosechador)
+        cantF := 0
+        si (cantEsq = 5)
+          cantEsq := 0
+    mientras ((HayFlorEnLaEsquina)
+      mientras ((HayFlorEnLaEsquina) & (cantF < 10))
+        juntarFlores(cantF)
+      av := PosAv
+      ca := PosCa
+      si (cantF = 10)
+        repetir cantF
+          BloquearEsquina(10,10)
+          Pos(10,10)
+          depositarFlor
+          Pos(av,ca)
+          LiberarEsquina(10,10)
+        EnviarMensaje(id,cosechador)
+        EnviarMensaje(cantF,cosechador)
+        EnviarMensaje(listo,cosechador)
+        cantF := 0
+    listo := V
+    EnviarMensaje(id,cosechador)
+    EnviarMensaje(cantF,cosechador)
+    EnviarMensaje(listo,cosechador)
+  fin
+  robot tipoCosechador
+  variables
+    id, cantFTotal : numero
+    listo1, listo2, : boolean
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    RecibirMensaje(listo1,*)
+    RecibirMensaje(listo2,*)
+    cantFTotal := 0
+    mientras ((listo1) | (listo2) = F)
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cantF,r1)
+        RecibirMensaje(listo1,r1)
+      sino
+        RecibirMensaje(cantF,r2)
+        RecibirMensaje(listo,r2)
+      si (cantF > 0)
+        repetir cantF
+          BloquearEsquina(10,10)
+          Pos(10,10)
+          tomarFlor
+          cantFTotal := cantFTotal + 1
+          Pos(1,4)
+          LiberarEsquina(10,10)
+    Informar('total_de_flores',cantFTotal)
+  fin
+variables
+  r1, r1 : tipoRecolector
+  cosechador : tipoCosechador
+comenzar
+  AsignarArea(r1,areaDeposito)
+  AsignarArea(r2,areaDeposito)
+  AsignarArea(cosechador,areaDeposito)
+  AsignarArea(r1,areaR1)
+  AsignarArea(r2,areaR2)
+  AsignarArea(cosechador,tipoCosechador)
+  Iniciar(r1,1,3)
+  Iniciar(r2,1,4)
+  Iniciar(cosechador,1,5)
+fin

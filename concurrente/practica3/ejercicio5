@@ -1,0 +1,89 @@
+programa ejercicio5
+areas
+  areaR1 : AreaP(4,1,4,100)
+  areaR2 : AreaP(6,1,6,100)
+  areaR3 : AreaP(8,1,8,100)
+  areaR4 : AreaP(10,1,10,100)
+  fuente : AreaPC(11,11,11,11)
+  areaCoordinador : AreaP(1,1,1,1)
+robots
+  robot tipoCompetidor
+  variables
+    id,av,ca : numero
+    hay : boolean
+  comenzar
+    RecibirMensaje(id,coordinador)
+    av := PosAv
+    ca := PosCa
+    BloquearEsquina(11,11)
+    Pos(11,11)
+    si (HayPapelEnLaEsquina)
+      hay := V
+      tomarPapel
+    sino
+      hay := F
+    Pos(av,ca)
+    LiberarEsquina(11,11)
+    mientras ((hay = V) & (PosCa < 100))
+      depositarPapel
+      mover
+      av := PosAv
+      ca := PosCa
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      si (HayPapelEnLaEsquina)
+        tomarPapel
+      sino
+        hay := F
+      Pos(av,ca)
+      LiberarEsquina(11,11)
+    si (PosCa = 100 & HayPapelEnLaBolsa)
+      depositarPapel
+    EnviarMensaje(id,coordinador)
+    EnviarMensaje(ca,coordinador)
+  fin
+  robot tipoCoordinador
+  variables
+    id,ca,idMax,caMax : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    caMax := -1
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(ca,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(ca,r2)
+        sino
+          si (id = 3)
+            RecibirMensaje(ca,r3)
+          sino
+            RecibirMensaje(ca,r4)
+      si (ca > caMax)
+        caMax := ca
+        idMax := id
+    Informar('el_que_llego_mas_lejos_fue_r',idMax)
+  fin
+variables
+  r1,r2,r3,r4 : tipoCompetidor
+  coordinador : tipoCoordinador
+comenzar
+  AsignarArea(r1,areaR1)
+  AsignarArea(r1,fuente)
+  AsignarArea(r2,areaR2)
+  AsignarArea(r2,fuente)
+  AsignarArea(r3,areaR3)
+  AsignarArea(r3,fuente)
+  AsignarArea(r4,areaR4)
+  AsignarArea(r4,fuente)
+  AsignarArea(coordinador,areaCoordinador)
+  Iniciar(r1,4,1)
+  Iniciar(r2,6,1)
+  Iniciar(r3,8,1)
+  Iniciar(r4,10,1)
+  Iniciar(coordinador,1,1)
+fin

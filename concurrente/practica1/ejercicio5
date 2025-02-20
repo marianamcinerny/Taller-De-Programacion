@@ -1,0 +1,87 @@
+programa ejercicio5
+procesos
+  proceso limpiarFlores
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso limpiarPapeles
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso depositarFlores
+  comenzar
+    mientras (HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+  proceso depositarPapeles
+  comenzar
+    mientras (HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+areas
+  area1 : AreaP (1,75,15,80)
+  area2 : AreaP (75,80,80,99)
+  area3 : AreaP (70,10,99,15)
+  area4 : AreaP (10,1,15,10)
+robots
+  robot tipo1
+  comenzar
+    derecha
+    repetir 2
+      repetir 14
+        limpiarFlores
+        mover
+      limpiarFlores
+      depositarFlores
+      Pos(1,80)
+  fin
+  robot tipo2
+  comenzar
+    repetir 2
+      repetir 19
+        limpiarPapeles
+        mover
+      limpiarPapeles
+      Pos(PosAv,(PosCa-19))
+      depositarPapeles
+      Pos(80,80)
+  fin
+  robot tipo3
+  comenzar
+    derecha
+    repetir 2
+      repetir 29
+        limpiarFlores
+        mover
+      limpiarFlores
+      depositarFlores
+      Pos(70,15)
+  fin
+  robot tipo4
+  comenzar
+    repetir 2
+      repetir 9
+        limpiarPapeles
+        mover
+      limpiarPapeles
+      Pos(PosAv,(PosCa-9))
+      depositarPapeles
+      Pos(15,1)
+  fin
+variables
+  r1 : tipo1
+  r2 : tipo2
+  r3 : tipo3
+  r4 : tipo4
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  Iniciar(r1,1,75)
+  Iniciar(r2,75,80)
+  Iniciar(r3,70,10)
+  Iniciar(r4,10,1)
+fin

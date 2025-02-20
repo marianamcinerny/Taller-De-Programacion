@@ -1,0 +1,115 @@
+programa parcial1
+procesos
+  proceso juntar (ES cantF : numero; ES cantP : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+      EnviarMensaje(V,jefe)
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+      EnviarMensaje(V,jefe)
+  fin
+areas
+  areaR1 : AreaP(10,10,10,10)
+  areaR2 : AreaP(11,10,11,10)
+  areaR3 : AreaP(12,10,12,10)
+  areaR4 : AreaP(13,10,13,10)
+  areaJefe : AreaP(1,1,1,1)
+  areaComun : AreaPC(45,48,62,69)
+robots
+  robot tipoRecolector
+  variables
+    id, cantP, cantF, av, ca, avR, caR, total, idGanador : numero
+    ok : boolean
+  comenzar
+    RecibirMensaje(id,jefe)
+    cantP := 0
+    cantF := 0
+    av := PosAv
+    ca := PosCa
+    EnviarMensaje(id,jefe)
+    repetir 5
+      Random(avR,45,62)
+      Random(caR,48,69)
+      BloquearEsquina(avR,caR)
+      Pos(avR,caR)
+      juntar(cantF,cantP)
+      Pos(av,ca)
+      LiberarEsquina(avR,caR)
+    EnviarMensaje(F,jefe)
+    total := cantP + cantF
+    RecibirMensaje(ok,jefe)
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(total,jefe)
+    RecibirMensaje(idGanador,jefe)
+    si (idGanador = id)
+      repetir cantF
+        depositarFlor
+      repetir cantP
+        depositarPapel
+  fin
+  robot tipoJefe
+  variables
+    cantFin, id, idMax, cant, cantMax : numero
+    estado, mensaje, ok : boolean
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    cantFin := 0
+    estado := V
+    mientras (estado)
+      RecibirMensaje(mensaje,*)
+      si (mensaje = F)
+        cantFin := cantFin + 1
+      si (cantFin = 4)
+        estado := F
+    ok := V
+    EnviarMensaje(ok,r1)
+    EnviarMensaje(ok,r2)
+    EnviarMensaje(ok,r3)
+    EnviarMensaje(ok,r4)
+    cantMax := -1
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cant,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(cant,r2)
+        sino
+          si (id = 3)
+            RecibirMensaje(cant,r3)
+          sino
+            RecibirMensaje(cant,r4)
+      si (cant > cantMax)
+        cantMax := cant
+        idMax := id
+    EnviarMensaje(idMax,r1)
+    EnviarMensaje(idMax,r2)
+    EnviarMensaje(idMax,r3)
+    EnviarMensaje(idMax,r4)
+  fin
+variables
+  r1,r2,r3,r4 : tipoRecolector
+  jefe : tipoJefe
+comenzar
+  AsignarArea(r1,areaComun)
+  AsignarArea(r2,areaComun)
+  AsignarArea(r3,areaComun)
+  AsignarArea(r4,areaComun)
+  AsignarArea(jefe,areaJefe)
+  AsignarArea(r1,areaR1)
+  AsignarArea(r2,areaR2)
+  AsignarArea(r3,areaR3)
+  AsignarArea(r4,areaR4)
+  AsignarArea(jefe,areaJefe)
+  Iniciar(r1,10,10)
+  Iniciar(r2,11,10)
+  Iniciar(r3,12,10)
+  Iniciar(r4,13,10)
+  Iniciar(jefe,1,1)
+fin

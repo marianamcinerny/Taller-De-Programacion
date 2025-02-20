@@ -1,0 +1,109 @@
+programa ejercicio3b
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+  proceso caminataEquipoA (ES cantP : numero)
+  comenzar
+    repetir 9
+      juntarPapeles(cantP)
+      mover
+    juntarPapeles(cantP)
+  fin
+  proceso caminataEquipoB (ES cantF : numero)
+  comenzar
+    repetir 9
+      juntarFlores(cantF)
+      mover
+    juntarFlores(cantF)
+  fin
+areas
+  area1A1 : AreaP(1,1,10,1)
+  area2A1 : AreaP(21,1,30,1)
+  area1A2 : AreaP(11,1,20,1)
+  area2A2 : AreaP(31,1,40,1)
+  area1B1 : AreaP(1,5,10,5)
+  area2B1 : AreaP(21,5,30,5)
+  area1B2 : AreaP(11,5,20,5)
+  area2B2 : AreaP(31,5,40,5)
+robots
+  robot primeroA
+  variables
+    cantP : numero
+  comenzar
+    derecha
+    cantP := 0
+    caminataEquipoA(cantP)
+    EnviarMensaje(cantP,a2)
+    Pos(21,1)
+    RecibirMensaje(cantP,a2)
+    caminataEquipoA(cantP)
+    EnviarMensaje(cantP,a2)
+  fin
+  robot segundoA
+  variables
+    cantP : numero
+  comenzar
+    derecha
+    RecibirMensaje(cantP,a1)
+    caminataEquipoA(cantP)
+    EnviarMensaje (cantP,a1)
+    Pos(31,1)
+    RecibirMensaje(cantP,a1)
+    caminataEquipoA(cantP)
+    Informar('papeles_del_equipo_a',cantP)
+  fin
+  robot primeroB
+  variables
+    cantF : numero
+  comenzar
+    derecha
+    cantF := 0
+    caminataEquipoB(cantF)
+    EnviarMensaje(cantF,b2)
+    Pos(21,5)
+    RecibirMensaje(cantF,b2)
+    caminataEquipoB(cantF)
+    EnviarMensaje(cantF,b2)
+  fin
+  robot segundoB
+  variables
+    cantF : numero
+  comenzar
+    derecha
+    RecibirMensaje(cantF,b1)
+    caminataEquipoB(cantF)
+    EnviarMensaje(cantF,b1)
+    Pos(31,5)
+    RecibirMensaje(cantF,b1)
+    caminataEquipoB(cantF)
+    Informar('flores_del_equipo_b',cantF)
+  fin
+variables
+  a1 : primeroA
+  a2 : segundoA
+  b1 : primeroB
+  b2 : segundoB
+comenzar
+  AsignarArea(a1,area1A1)
+  AsignarArea(a1,area2A1)
+  AsignarArea(a2,area1A2)
+  AsignarArea(a2,area2A2)
+  AsignarArea(b1,area1B1)
+  AsignarArea(b1,area2B1)
+  AsignarArea(b2,area1B2)
+  AsignarArea(b2,area2B2)
+  Iniciar(a1,1,1)
+  Iniciar(a2,11,1)
+  Iniciar(b1,1,5)
+  Iniciar(b2,11,5)
+fin

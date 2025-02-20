@@ -1,0 +1,115 @@
+{Realice un programa con 2 robots recolectores de flores (floreros) y 2 robots recolectores de papeles (papeleros).
+Los floreros comparten area y tienen 5 intentos cada uno para juntar las flores de una
+esquina, dentro de dicha area, elegida al azar en cada intento. 
+Del mismo modo, los papeleros comparten area y tienen 3 intentos cada uno para juntar los papeles. 
+En cada intento cada robot va a la esquina al azar, junta *todos* los elementos 
+(flores o papeles segun le corresponda) y vuelve a su esquina original. 
+Al finalizar sus intentos cada robot debe acceder a la esquina (10, 10) y depositar los elementos recogidos de a uno.
+-Area de floreros: (1,1) a (5, 10)
+-Area de papeleros: (6, 1) a (10, 9)
+-Esquinas de inicio de floreros: (6,10) y (7,10)
+-Esquinas de inicio de papeleros: (8,10) y (9,10)
+}
+programa Ejercicio1
+procesos
+  proceso juntarFlores (ES flo:numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      flo:= flo + 1
+  fin
+  
+  proceso juntarPapeles (ES pap:numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      pap:= pap + 1
+  fin  
+areas
+  areaFloreros  : AreaPC(1,1,5,10)
+  areaPapeleros : AreaPC(6,1,10,9)
+  casaf1        : AreaP(6,10,6,10)
+  casaf2        : AreaP(7,10,7,10)
+  casap1        : AreaP(8,10,8,10)
+  casap2        : AreaP(9,10,9,10) 
+  areaTodos     : AreaC(10,10,10,10)
+robots 
+  robot tipoFlorero
+  variables
+    cantidad: numero
+    av, ca, aveOri, caOri: numero
+  comenzar
+    aveOri:= PosAv
+    caOri:= PosCa
+    cantidad:= 0
+    repetir 5
+      Random(av, 1, 5)
+      Random(ca, 1, 10)
+      {Cuidado: no debo chocar con el otro florero}
+      BloquearEsquina(av, ca)
+      Pos(av, ca)    
+      juntarFlores(cantidad)
+      Pos(aveOri, caOri)
+      LiberarEsquina(av, ca)
+    {Cuidado: no debo chocar con todos los demas}
+    {Para maximizar la concurrencia, deposito de a una las flores}
+    repetir cantidad
+      BloquearEsquina(10, 10)
+      Pos(10, 10)
+      depositarFlor
+      Pos(aveOri, caOri)
+      LiberarEsquina(10, 10)
+    Informar(cantidad)  
+  fin
+
+  robot tipoPapelero
+  variables
+    cantidad: numero
+    av, ca, aveOri, caOri: numero
+  comenzar
+    aveOri:= PosAv
+    caOri:= PosCa
+    cantidad:= 0
+    repetir 3
+      Random(av, 6, 10)
+      Random(ca, 1, 9)
+      {Cuidado: no debo chocar con el otro papelero}
+      BloquearEsquina(av, ca)
+      Pos(av, ca)    
+      juntarPapeles(cantidad)
+      Pos(aveOri, caOri)
+      LiberarEsquina(av, ca)
+    {Cuidado: no debo chocar con todos los demas}
+    {Para maximizar la concurrencia, deposito de a uno los papeles}
+    repetir cantidad
+      BloquearEsquina(10, 10)
+      Pos(10, 10)
+      depositarPapel
+      Pos(aveOri, caOri)
+      LiberarEsquina(10, 10)
+    Informar(cantidad)  
+  fin
+
+variables 
+  robotf1: tipoFlorero
+  robotf2: tipoFlorero
+  robotp1: tipoPapelero
+  robotp2: tipoPapelero
+comenzar 
+  AsignarArea(robotf1,casaf1)
+  AsignarArea(robotf2,casaf2)
+  AsignarArea(robotp1,casap1)
+  AsignarArea(robotp2,casap2)
+  AsignarArea(robotf1,areaFloreros)
+  AsignarArea(robotf2,areaFloreros)
+  AsignarArea(robotp1,areaPapeleros)
+  AsignarArea(robotp2,areaPapeleros)
+  AsignarArea(robotf1,areaTodos)
+  AsignarArea(robotf2,areaTodos)
+  AsignarArea(robotp1,areaTodos)
+  AsignarArea(robotp2,areaTodos)
+  Iniciar(robotf1, 6, 10)
+  Iniciar(robotf2, 7, 10) 
+  Iniciar(robotp1, 8, 10)
+  Iniciar(robotp2, 9, 10)  
+fin

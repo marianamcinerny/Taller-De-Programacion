@@ -1,0 +1,74 @@
+programa ejercicio2
+procesos
+  proceso contar (ES cantF : numero; ES cantP : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso escalon (ES cantEscalones : numero)
+  variables
+    cantF, cantP, alto : numero
+  comenzar
+    cantEscalones := 0
+    repetir 4
+      cantF := 0
+      cantP := 0
+      Random(alto,1,5)
+      repetir alto
+        contar(cantF,cantP)
+        mover
+      contar(cantF,cantP)
+      derecha
+      mover
+      contar(cantF,cantP)
+      si (cantF > cantP)
+        cantEscalones := cantEscalones + 1
+      izquierda
+  fin
+areas
+  area1 : AreaP(2,1,6,20)
+  area2 : AreaP(7,1,11,20)
+  area3 : AreaP(12,1,16,20)
+  areaJ : AreaP(1,1,1,1)
+robots
+  robot contador
+  variables
+    cantEscalones : numero
+  comenzar
+    escalon(cantEscalones)
+    EnviarMensaje(cantEscalones,rJ)
+  fin
+  robot jefe
+  variables
+    cant, total : numero
+  comenzar
+    total := 0
+    repetir 3
+      RecibirMensaje(cant,*)
+      total := total + cant
+    Informar('cantidad_de_escalones_con_mas_flores_que_papeles',total)
+  fin
+variables
+  r1 : contador
+  r2 : contador
+  r3 : contador
+  rJ : jefe
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(rJ,areaJ)
+  Iniciar(rJ,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,7,1)
+  Iniciar(r3,12,1)
+fin

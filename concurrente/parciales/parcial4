@@ -1,0 +1,132 @@
+programa parcial4
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+areas
+  areaDeposito : AreaPC(20,20,20,20)
+  areaFiscal : AreaP(30,1,30,1)
+  area1R1A : AreaP(1,1,1,11)
+  area2R1A : AreaP(2,11,11,11)
+  area1R2A : AreaP(11,1,11,10)
+  area2R2A : AreaP(2,1,10,1)
+  area1R1B : AreaP(13,1,13,11)
+  area2R1B : AreaP(14,11,23,11)
+  area1R2B : AreaP(23,1,23,10)
+  area2R2B : AreaP(14,1,22,1) 
+robots
+  robot tipoPrimero
+  variables
+    id, cantF, av, ca : numero
+    ok : boolean
+  comenzar
+    RecibirMensaje(id,fiscal)
+    cantF := 0
+    repetir 2
+      repetir 10
+        juntarFlores(cantF)
+        mover
+      derecha
+    ok := V
+    si(id = 1)
+      EnviarMensaje(ok,r2A)
+    sino
+      EnviarMensaje(ok,r2B)
+    av := PosAv
+    ca := PosCa
+    repetir cantF
+      BloquearEsquina(20,20)
+      Pos(20,20)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(20,20)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(cantF,fiscal)
+  fin
+  robot tipoSegundo
+  variables
+    id, cantF, av, ca : numero
+    ok : boolean
+  comenzar
+    RecibirMensaje(id,fiscal)
+    cantF := 0
+    si (id = 2)
+      RecibirMensaje(ok,r1A)
+    sino
+      RecibirMensaje(ok,r1B)
+    repetir 2
+      derecha
+    repetir 2
+      repetir 9
+        juntarFlores(cantF)
+        mover
+      derecha
+    av := PosAv
+    ca := PosCa
+    repetir cantF
+      BloquearEsquina(20,20)
+      Pos(20,20)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(20,20)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(cantF,fiscal)
+  fin
+  robot tipoFiscal
+  variables
+    id, cant, cantA, cantB : numero
+  comenzar
+    EnviarMensaje(1,r1A)
+    EnviarMensaje(2,r2A)
+    EnviarMensaje(3,r1B)
+    EnviarMensaje(4,r2B)
+    cantA := 0
+    cantB := 0
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cant,r1A)
+        cantA := cantA + cant
+      sino
+        si (id = 2)
+          RecibirMensaje(cant,r2A)
+          cantA := cantA + cant
+        sino
+          si (id = 3)
+            RecibirMensaje(cant,r1B)
+            cantB := cantB + cant
+          sino
+            RecibirMensaje(cant,r2B)
+            cantB := cantB + cant
+    si (cantA > cantB)
+      Informar('gano_el_equipo_A',cantA)
+    sino
+      Informar('gano_el_equipo_B',cantB)
+  fin
+variables
+  r1A,r1B : tipoPrimero
+  r2A,r2B : tipoSegundo
+  fiscal : tipoFiscal
+comenzar
+  AsignarArea(fiscal,areaFiscal)
+  AsignarArea(r1A,areaDeposito)
+  AsignarArea(r2A,areaDeposito)
+  AsignarArea(r1B,areaDeposito)
+  AsignarArea(r2B,areaDeposito)
+  AsignarArea(r1A,area1R1A)
+  AsignarArea(r1A,area2R1A)
+  AsignarArea(r2A,area1R2A)
+  AsignarArea(r2A,area2R2A)
+  AsignarArea(r1B,area1R1B)
+  AsignarArea(r1B,area2R1B)
+  AsignarArea(r2B,area1R2B)
+  AsignarArea(r2B,area2R2B)
+  Iniciar(fiscal,30,1)
+  Iniciar(r1A,1,1)
+  Iniciar(r2A,11,10)
+  Iniciar(r1B,13,1)
+  Iniciar(r2B,23,10)
+fin

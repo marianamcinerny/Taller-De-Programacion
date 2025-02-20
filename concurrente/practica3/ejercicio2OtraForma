@@ -1,0 +1,116 @@
+programa ejercicio2OtraForma
+procesos
+  proceso juntar (ES elemento : numero; E id : numero)
+  comenzar
+    si (id = 1)
+      mientras (HayFlorEnLaEsquina)
+        tomarFlor
+        elemento := elemento + 1
+    sino
+      mientras (HayPapelEnLaEsquina)
+        tomarPapel
+        elemento := elemento + 1
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso giro1 (E id : numero)
+  comenzar
+    si (id = 1)
+      derecha
+    sino
+      izquierda
+  fin
+  proceso giro2 (E id : numero)
+  comenzar
+    si (id = 1)
+      izquierda
+    sino
+      derecha
+  fin
+  proceso giro180
+  comenzar
+    repetir 2
+      derecha
+  fin
+  proceso escalon (E medida : numero; ES elemento : numero; E id : numero)
+  comenzar
+    juntar(elemento,id)
+    repetir medida
+      mover
+    giro1(id)
+    juntar(elemento,id)
+    repetir medida
+      mover
+    giro2(id)
+    juntar(elemento,id)
+  fin
+areas
+  area : AreaC(1,1,31,30)
+robots
+  robot juntador
+  variables
+    elemento,id,medida : numero
+    listo : boolean
+  comenzar
+    medida := 5
+    elemento := 0
+    RecibirMensaje(id,jefe)
+    repetir 4
+      escalon(medida,elemento,id)
+      medida := medida - 1
+    {esquina compartida}
+    mover
+    giro1(id)
+    si (id = 1) {podria ser un proceso*}
+      BloquearEsquina((PosAv+1),PosCa) {asi o 16,16?}
+    sino
+      BloquearEsquina((PosAv-1),PosCa) {}
+    mover
+    EnviarMensaje(id,jefe)
+    juntar(elemento,id)
+    giro180
+    mover
+    si (id = 1) {*}
+      LiberarEsquina((PosAv+1),PosCa)
+    sino
+      LiberarEsquina((PosAv-1),PosCa) {}
+    repetir 4
+      medida := medida + 1
+      escalon(medida,elemento,id)
+    si (id = 1)
+      Informar('flores_juntadas',elemento)
+    sino
+      Informar('papeles_juntados',elemento)
+    listo := V
+    EnviarMensaje(listo,jefe)
+  fin
+  robot tipoJefe
+  variables
+    id, ganador : numero
+    listo : boolean
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    ganador := 0
+    repetir 2
+      RecibirMensaje(id,*)
+      si (ganador = 0)
+        ganador := id
+    repetir 2
+      RecibirMensaje(listo,*)
+    Informar('llego_primero_r',ganador)
+  fin
+variables
+  r1, r2 : juntador
+  jefe : tipoJefe
+comenzar
+  AsignarArea(r1,area)
+  AsignarArea(r2,area)
+  AsignarArea(jefe,area)
+  Iniciar(r1,1,1)
+  Iniciar(r2,31,1)
+  Iniciar(jefe,15,1)
+fin

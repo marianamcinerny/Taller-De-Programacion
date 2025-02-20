@@ -1,0 +1,114 @@
+programa parcial8
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+areas
+  areaChoque : AreaPC(6,2,6,50)
+  area1F1 : AreaP(6,1,6,1)
+  area2F1 : AreaP(6,51,6,61)
+  area1F2 : AreaP(1,2,5,50)
+  area2F2 : AreaP(7,2,61,50)
+  areaFiscal : AreaP(100,100,100,100)
+robots
+  robot tipoF1
+  variables
+    id, cantF, choque, primero : numero
+    listo, ok : boolean
+  comenzar
+    RecibirMensaje(id,fiscal)
+    RecibirMensaje(choque,fiscal)
+    repetir (choque - 1)
+      juntarFlores(cantF)
+      mover
+    BloquearEsquina(6,choque)
+    mover
+    EnviarMensaje(id,fiscal)
+    juntarFlores(cantF)
+    mover
+    LiberarEsquina(6,choque)
+    repetir (60 - choque - 1)
+      juntarFlores(cantF)
+      mover
+    juntarFlores(cantF)
+    RecibirMensaje(ok,fiscal)
+    listo := V
+    EnviarMensaje(listo,fiscal)
+    RecibirMensaje(primero, fiscal)
+    si (primero = id)
+      EnviarMensaje(cantF,fiscal)
+  fin
+  robot tipoF2
+  variables
+    id, cantF, choque, primero : numero
+    listo, ok : boolean
+  comenzar
+    RecibirMensaje(id,fiscal)
+    RecibirMensaje(choque,fiscal)
+    derecha
+    Pos(1,choque)
+    repetir 4
+      juntarFlores(cantF)
+      mover
+    BloquearEsquina(6,choque)
+    mover
+    EnviarMensaje(id,fiscal)
+    juntarFlores(cantF)
+    mover
+    LiberarEsquina(6,choque)
+    repetir 54
+      juntarFlores(cantF)
+      mover
+    juntarFlores(cantF)
+    RecibirMensaje(ok,fiscal)
+    listo := V
+    EnviarMensaje(listo,fiscal)
+    RecibirMensaje(primero,fiscal)
+    si (primero = id)
+      EnviarMensaje(cantF,fiscal)
+  fin
+  robot tipoFiscal
+  variables
+    id, primero, cant, choque : numero
+    listo, ok : boolean
+  comenzar
+    EnviarMensaje(1,f1)
+    EnviarMensaje(2,f2)
+    Random(choque,2,50)
+    EnviarMensaje(choque,f1)
+    EnviarMensaje(choque,f2)
+    primero := 0
+    repetir 2
+      RecibirMensaje(id,*)
+      si (primero = 0)
+        primero := id
+    ok := V
+    EnviarMensaje(ok,f1)
+    EnviarMensaje(ok,f2)
+    repetir 2
+      RecibirMensaje(listo,*)
+    EnviarMensaje(primero,f1)
+    EnviarMensaje(primero,f2)
+    RecibirMensaje(cant,*)
+    Informar('llego_primero_f',primero)
+    Informar('flores_que_junto',cant)
+  fin
+variables
+  f1 : tipoF1
+  f2 : tipoF2
+  fiscal : tipoFiscal
+comenzar
+  AsignarArea(f1,areaChoque)
+  AsignarArea(f2,areaChoque)
+  AsignarArea(f1,area1F1)
+  AsignarArea(f1,area2F1)
+  AsignarArea(f2,area1F2)
+  AsignarArea(f2,area2F2)
+  AsignarArea(fiscal,areaFiscal)
+  Iniciar(f1,6,1)
+  Iniciar(f2,1,2)
+  Iniciar(fiscal,100,100)
+fin

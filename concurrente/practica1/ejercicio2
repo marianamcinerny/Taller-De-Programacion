@@ -1,0 +1,68 @@
+programa ejercicio2
+procesos
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP +1
+  fin
+  proceso recorrerCalle (ES cantP : numero)
+  comenzar
+    repetir 19
+      juntarPapeles(cantP)
+      mover
+  fin
+areas
+  area1 : AreaP(10,10,10,29)
+  area2 : AreaP(10,30,29,30)
+  area3 : AreaP(30,11,30,30)
+  area4 : AreaP(11,10,30,10)
+robots
+  robot tipo1
+  variables
+    cantP : numero
+  comenzar
+    recorrerCalle(cantP)
+    Informar('cantidad_papeles',cantP)
+  fin
+  robot tipo2
+  variables
+    cantP : numero
+  comenzar
+    derecha
+    recorrerCalle(cantP)
+    Informar('cantidad_papeles',cantP)
+  fin
+  robot tipo3
+  variables
+    cantP : numero
+  comenzar
+    repetir 2
+      derecha
+    recorrerCalle(cantP)
+    Informar('cantidad_papeles',cantP)
+  fin
+  robot tipo4
+  variables
+    cantP : numero
+  comenzar
+    repetir 3
+      derecha
+    recorrerCalle(cantP)
+    Informar('cant_papeles',cantP)
+  fin
+variables
+  r1 : tipo1
+  r2 : tipo2
+  r3 : tipo3
+  r4 : tipo4
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  Iniciar(r1,10,10)
+  Iniciar(r2,10,30)
+  Iniciar(r3,30,30)
+  Iniciar(r4,30,10)
+fin

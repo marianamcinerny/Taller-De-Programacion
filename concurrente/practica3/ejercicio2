@@ -1,0 +1,140 @@
+programa ejercicio2
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+  proceso giro180
+  comenzar
+    repetir 2
+      derecha
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+areas
+  area : AreaC (1,1,31,30)
+robots
+  robot tipoFlorero
+  variables
+    cantF, esc, id : numero
+    listo : boolean
+  comenzar
+    RecibirMensaje(id,jefe)
+    cantF := 0
+    esc := 5
+    {escalera inferior}
+    repetir 4
+      repetir 2
+        juntarFlores(cantF)
+        repetir esc
+          mover
+        derecha
+      esc := esc - 1
+      giro180
+    juntarFlores(cantF)
+    {va a la esquina compartida}
+    mover
+    juntarFlores(cantF)
+    derecha
+    BloquearEsquina((PosAv+1),PosCa)
+    mover
+    EnviarMensaje(id,jefe)
+    juntarFlores(cantF)
+    giro180
+    mover
+    LiberarEsquina((PosAv + 1),PosCa)
+    {escalera superior}
+    repetir 4
+      esc := esc + 1
+      repetir 2
+        juntarFlores(cantF)
+        repetir esc
+          mover
+        derecha
+      giro180
+    juntarFlores(cantF)
+    Informar('flores_juntadas',cantF)
+    listo := V
+    EnviarMensaje(listo,jefe)
+  fin
+  robot tipoPapelero
+  variables
+    cantP, esc, id : numero
+    listo : boolean
+  comenzar
+    RecibirMensaje(id,jefe)
+    cantP := 0
+    esc := 5
+    {escalon inferior}
+    repetir 4
+      repetir 2
+        juntarPapeles(cantP)
+        repetir esc
+          mover
+        izquierda
+      giro180
+      esc := esc - 1
+    juntarPapeles(cantP)
+    {voy a la esquina compartida}
+    mover
+    izquierda
+    BloquearEsquina((PosAv-1),PosCa)
+    mover
+    EnviarMensaje(id,jefe)
+    juntarPapeles(cantP)
+    giro180
+    mover
+    LiberarEsquina((PosAv-1),PosCa)
+    {escalera superior}
+    repetir 4
+      esc := esc + 1
+      repetir 2
+        juntarPapeles(cantP)
+        repetir esc
+          mover
+        izquierda
+      giro180
+    juntarPapeles(cantP)
+    Informar('papeles_juntados',cantP)
+    listo := V
+    EnviarMensaje(listo,jefe)
+  fin
+  robot tipoJefe
+  variables
+    id,primero : numero
+    listo : boolean
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    primero := 0
+    repetir 2
+      RecibirMensaje(id,*)
+      si (primero = 0)
+        primero := id
+    repetir 2
+      RecibirMensaje(listo,*)
+    Informar('llego_primero_r',primero)
+  fin
+variables
+  r1 : tipoFlorero
+  r2 : tipoPapelero
+  jefe : tipoJefe
+comenzar
+  AsignarArea(r1,area)
+  AsignarArea(r2,area)
+  AsignarArea(jefe,area)
+  Iniciar(r1,1,1)
+  Iniciar(r2,31,1)
+  Iniciar(jefe,15,1)
+fin

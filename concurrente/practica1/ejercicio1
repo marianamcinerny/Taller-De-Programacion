@@ -1,0 +1,50 @@
+programa ejercicio1
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  
+  proceso depositarFlores(E cantF : numero)
+  comenzar
+    repetir cantF
+      depositarFlor
+  fin
+  
+  proceso recorrerAvenida (ES cantF : numero; ES cantV : numero)
+  comenzar
+    cantF := 0
+    cantV := 0
+    repetir 99
+      si ~HayFlorEnLaEsquina
+        cantV := cantV + 1
+      juntarFlores(cantF)
+      mover
+    si ~HayFlorEnLaEsquina
+      cantV := cantV + 1
+    juntarFlores(cantF)
+    depositarFlores(cantF)
+  fin
+
+areas
+  area1 : AreaC(1,1,1,100)
+
+robots
+  robot robot1
+  variables
+    cantF : numero
+    cantV : numero
+  comenzar
+    recorrerAvenida(cantF,cantV)
+    Informar('cant_flores',cantF)
+    Informar('cant_esq_vacias',cantV)
+  fin
+  
+variables
+  r1 : robot1
+comenzar
+  AsignarArea(r1,area1)
+  Iniciar(r1,1,1)
+fin

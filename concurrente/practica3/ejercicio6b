@@ -1,0 +1,231 @@
+programa ejercicio6b
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso juntarPapeles
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso juntarAmbos
+  comenzar
+    juntarPapeles
+    juntarFlores
+  fin
+  proceso giro180
+  comenzar
+    repetir 2
+      derecha
+  fin
+areas
+  areaJefe : AreaP(1,1,1,1)
+  areaCuadriculas : AreaPC(2,2,15,15)
+  areaPrimero : AreaPC(1,20,100,20)
+  areaSegundo : AreaPC(1,21,100,21)
+  areaTercero : AreaPC(1,22,100,22)
+robots
+  robot tipoFlorero
+  variables
+    id, calle : numero
+  comenzar
+    RecibirMensaje(id,jefe)
+    repetir 5
+      juntarFlores
+      mover
+    derecha
+    repetir 2
+      juntarFlores
+      mover
+    juntarFlores
+    BloquearEsquina(5,7)
+    mover
+    juntarFlores
+    mover
+    LiberarEsquina(5,7)
+    juntarFlores
+    mover
+    derecha
+    juntarFlores
+    mover
+    juntarFlores
+    BloquearEsquina(7,5)
+    mover
+    juntarFlores
+    mover
+    LiberarEsquina(7,5)
+    repetir 2
+      juntarFlores
+      mover
+    derecha
+    repetir 5
+      juntarFlores
+      mover
+    EnviarMensaje(id,jefe)
+    RecibirMensaje(calle,jefe)
+    Pos(1,calle)
+    giro180
+    mientras ((HayFlorEnLaBolsa) & (PosAv < 100))
+      depositarFlor
+      mover
+    si ((PosAv = 100) & (HayFlorEnLaBolsa))
+      depositarFlor
+  fin
+  robot tipoAmbos
+  variables
+    id, calle : numero
+  comenzar
+    RecibirMensaje(id,jefe)
+    juntarAmbos
+    mover
+    juntarAmbos
+    BloquearEsquina(5,7)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(5,7)
+    repetir 6
+      juntarAmbos
+      mover
+    derecha
+    repetir 3
+      juntarAmbos
+      mover
+    BloquearEsquina(9,19)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(9,19)
+    repetir 4
+      juntarAmbos
+      mover
+    derecha
+    repetir 4
+      juntarAmbos
+      mover
+    BloquearEsquina(14,9)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(14,9)
+    repetir 3
+      juntarAmbos
+      mover
+    derecha
+    repetir 6
+      juntarAmbos
+      mover
+    BloquearEsquina(7,5)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(7,5)
+    juntarAmbos
+    mover
+    EnviarMensaje(id,jefe)
+    RecibirMensaje(calle,jefe)
+    Pos(1,calle)
+    giro180
+    mientras ((HayFlorEnLaBolsa) & (HayPapelEnLaBolsa) & (PosAv < 100))
+      depositarFlor
+      depositarPapel
+      mover
+    si ((PosAv = 100) & (HayFlorEnLaBolsa) & (HayPapelEnLaBolsa))
+      depositarFlor
+      depositarPapel
+  fin
+  robot tipoPapelero
+  variables
+    id, calle : numero
+  comenzar
+    RecibirMensaje(id,jefe)
+    repetir 4
+      juntarPapeles
+      mover
+    BloquearEsquina(9,19)
+    mover
+    juntarPapeles
+    mover
+    LiberarEsquina(9,19)
+    derecha
+    repetir 2
+      repetir 6
+        juntarPapeles
+        mover
+      derecha
+    BloquearEsquina(14,9)
+    mover
+    juntarPapeles
+    mover
+    LiberarEsquina(14,9)
+    repetir 4
+      juntarPapeles
+      mover
+    EnviarMensaje(id,jefe)
+    RecibirMensaje(calle,jefe)
+    Pos(1,calle)
+    giro180
+    mientras ((HayPapelEnLaBolsa) & (PosAv < 100))
+      depositarPapel
+      mover
+    si ((PosAv = 100) & (HayPapelEnLaBolsa))
+      depositarPapel
+  fin
+  robot tipoJefe
+  variables
+    id1,id2,id3 : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    RecibirMensaje(id1,*)
+    RecibirMensaje(id2,*)
+    RecibirMensaje(id3,*)
+    si (id1 = 1)
+      EnviarMensaje(20,r1)
+    sino
+      si (id1 = 2)
+        EnviarMensaje(20,r2)
+      sino
+        EnviarMensaje(20,r3)
+    si (id2 = 1)
+      EnviarMensaje(21,r1)
+    sino
+      si (id2 = 2)
+        EnviarMensaje(21,r2)
+      sino
+        EnviarMensaje(21,r3)
+    si (id3 = 1)
+      EnviarMensaje(22,r1)
+    sino
+      si (id3 = 2)
+        EnviarMensaje(22,r2)
+      sino
+        EnviarMensaje(22,r3)
+  fin
+variables
+  r1 : tipoFlorero
+  r2 : tipoAmbos
+  r3 : tipoPapelero
+  jefe : tipoJefe
+comenzar
+  AsignarArea(r1,areaCuadriculas)
+  AsignarArea(r1,areaPrimero)
+  AsignarArea(r1,areaSegundo)
+  AsignarArea(r1,areaTercero)
+  AsignarArea(r2,areaCuadriculas)
+  AsignarArea(r2,areaPrimero)
+  AsignarArea(r2,areaSegundo)
+  AsignarArea(r2,areaTercero)
+  AsignarArea(r3,areaCuadriculas)
+  AsignarArea(r3,areaPrimero)
+  AsignarArea(r3,areaSegundo)
+  AsignarArea(r3,areaTercero)
+  AsignarArea(jefe,areaJefe)
+  Iniciar(r1,2,2)
+  Iniciar(r2,5,5)
+  Iniciar(r3,9,9)
+  Iniciar(jefe,1,1)
+fin

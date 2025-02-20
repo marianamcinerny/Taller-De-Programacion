@@ -1,0 +1,97 @@
+programa ejercicio2
+procesos
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras ((HayPapelEnLaEsquina) & (cantP < 5))
+      tomarPapel
+      cantP := cantP + 1
+  fin
+areas
+  areaProductor1 : AreaP(5,1,5,100)
+  areaProductor2 : AreaP(10,1,10,100)
+  areaComun : AreaC(50,50,50,50)
+  areaConsumidor1 : AreaP(11,1,11,1)
+  areaConsumidor2 : AreaP(12,1,12,1)
+robots
+  robot tipoProductor
+  variables
+    cantP,av,ca : numero
+  comenzar
+    cantP := 0
+    repetir 99
+      mientras (HayPapelEnLaEsquina)
+        juntarPapeles(cantP)
+        si (cantP = 5)
+          av := PosAv
+          ca := PosCa
+          repetir 5
+            BloquearEsquina(50,50)
+            Pos(50,50)
+            depositarPapel
+            Pos(av,ca)
+            LiberarEsquina(50,50)
+          cantP := 0
+      mover
+    mientras (HayPapelEnLaEsquina)
+      juntarPapeles(cantP)
+      si (cantP = 5)
+        av := PosAv
+        ca := PosCa
+        repetir 5
+          BloquearEsquina(50,50)
+          depositarPapel
+          Pos(av,ca)
+          LiberarEsquina(50,50)
+        cantP := 0
+  fin
+  robot tipoConsumidor
+  variables
+    cantP,cantPRandom,dejar,insuficiente,av,ca : numero
+  comenzar
+    insuficiente := 0
+    av := PosAv
+    ca := PosCa
+    mientras (insuficiente < 8)
+      Random(cantPRandom,2,5)
+      cantP := 0
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      mientras (HayPapelEnLaEsquina)
+        tomarPapel
+        cantP := cantP + 1
+      si (cantP < cantPRandom)
+        repetir cantP
+          depositarPapel
+        insuficiente := insuficiente + 1
+      sino
+        si (cantP > cantPRandom)
+          dejar := cantP - cantPRandom
+          repetir dejar
+            depositarPapel
+          insuficiente := 0
+        sino
+          si (cantP = cantPRandom)
+            insuficiente := 0
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+      si (HayPapelEnLaBolsa)
+        repetir cantPRandom
+          depositarPapel
+  fin
+variables
+  r1, r2 : tipoConsumidor
+  r3, r4 : tipoProductor
+comenzar
+  AsignarArea(r1,areaConsumidor1)
+  AsignarArea(r2,areaConsumidor2)
+  AsignarArea(r3,areaProductor1)
+  AsignarArea(r4,areaProductor2)
+  AsignarArea(r1,areaComun)
+  AsignarArea(r2,areaComun)
+  AsignarArea(r3,areaComun)
+  AsignarArea(r4,areaComun)
+  Iniciar(r1,11,1)
+  Iniciar(r2,12,1)
+  Iniciar(r3,5,1)
+  Iniciar(r4,10,1)
+fin

@@ -1,0 +1,128 @@
+programa parcial2
+procesos
+  proceso buscarFlor (E avL : numero; E caL : numero)
+  comenzar
+    BloquearEsquina(15,15)
+    Pos(15,15)
+    tomarFlor
+    Pos(avL,caL)
+    LiberarEsquina(15,15)
+  fin
+  proceso buscarPapel (E avL : numero; E caL : numero)
+  comenzar
+    BloquearEsquina(15,15)
+    Pos(15,15)
+    tomarPapel
+    Pos(avL,caL)
+    LiberarEsquina(15,15)
+  fin
+areas
+  areaP1 : AreaP(50,50,50,50)
+  areaF1 : AreaP(51,51,51,51)
+  areaP2 : AreaP(52,52,52,52)
+  areaF2 : AreaP(53,53,53,53)
+  areaLP1 : AreaP(5,4,5,15)
+  areaLF1 : AreaP(6,4,9,4)
+  areaLP2 : AreaP(11,4,11,15)
+  areaLF2 : AreaP(12,4,15,4)
+  areaJefe : AreaP(1,1,1,1)
+  areaDeposito : AreaPC(15,15,15,15)
+robots
+  robot tipoFlorero
+  variables
+    id, av, ca, avL, caL : numero
+  comenzar
+    RecibirMensaje(id,jefe)
+    av := PosAv
+    ca := PosCa
+    derecha
+    si (id = 1)
+      Pos(6,4)
+    sino
+      Pos(12,4)
+    avL := PosAv
+    caL := PosCa
+    repetir 3
+      buscarFlor(avL,caL)
+      depositarFlor
+      mover
+      avL := PosAv
+      caL := PosCa
+    buscarFlor(avL,caL)
+    depositarFlor
+    EnviarMensaje(id,jefe)
+    Pos(av,ca)
+  fin
+  robot tipoPapelero
+  variables
+    id, av, ca, avL, caL : numero
+  comenzar
+    RecibirMensaje(id,jefe)
+    av := PosAv
+    ca := PosCa
+    buscarPapel(av,ca)
+    si (id = 1)
+      Pos(5,4)
+    sino
+      Pos(11,4)
+    avL := PosAv
+    caL := PosCa
+    repetir 11
+      buscarPapel(avL,caL)
+      depositarPapel
+      mover
+      avL := PosAv
+      caL := PosCa
+    buscarPapel(avL,caL)
+    depositarPapel
+    EnviarMensaje(id,jefe)
+    Pos(av,ca)
+  fin
+  robot tipoJefe
+  variables
+    id, cant1, cant2, gano : numero
+  comenzar
+    EnviarMensaje(1,p1)
+    EnviarMensaje(1,f1)
+    EnviarMensaje(2,p2)
+    EnviarMensaje(3,f2)
+    cant1 := 0
+    cant2 := 0
+    gano := 0
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        cant1 := cant1 + 1
+      sino
+        cant2 := cant2 + 2
+      si (gano = 0)
+        si (cant1 = 2)
+          gano := 1
+        sino
+          gano := 2
+    Informar(gano)
+  fin
+variables
+  p1,p2 : tipoPapelero
+  f1,f2 : tipoFlorero
+  jefe : tipoJefe
+comenzar
+  AsignarArea(f1,areaDeposito)
+  AsignarArea(p1,areaDeposito)
+  AsignarArea(f2,areaDeposito)
+  AsignarArea(p2,areaDeposito)
+  AsignarArea(f1,areaF1)
+  AsignarArea(f2,areaF2)
+  AsignarArea(p1,areaP1)
+  AsignarArea(p2,areaP2)
+  AsignarArea(f1,areaLF1)
+  AsignarArea(f2,areaLF2)
+  AsignarArea(p1,areaLP1)
+  AsignarArea(p2,areaLP2)
+  AsignarArea(jefe,areaJefe)
+  Iniciar(jefe,1,1)
+  Iniciar(p1,50,50)
+  Iniciar(f1,51,51)
+  Iniciar(p2,52,52)
+  Iniciar(f2,53,53)
+fin

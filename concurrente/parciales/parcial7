@@ -1,0 +1,107 @@
+programa parcial7
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso depositar (E cantF : numero; E av : numero; E ca : numero)
+  comenzar
+    repetir cantF
+      BloquearEsquina(25,25)
+      Pos(25,25)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(25,25)
+  fin
+areas
+  areaDeposito : AreaPC(25,25,25,25)
+  areaR1 : AreaP(1,1,6,11)
+  areaR2 : AreaP(7,1,12,11)
+  areaR3 : AreaP(13,1,18,11)
+  areaCoordinador : AreaP(24,24,24,24)
+robots
+  robot tipoRecolector
+  variables
+    id, cantF, alto, ancho, total, av, ca : numero
+  comenzar
+    RecibirMensaje(id,coordinador)
+    RecibirMensaje(alto,coordinador)
+    RecibirMensaje(ancho,coordinador)
+    total := 0
+    repetir 2
+      cantF := 0
+      repetir alto
+        juntarFlores(cantF)
+        mover
+      derecha
+      total := total + cantF
+      av := PosAv
+      ca := PosCa
+      depositar(cantF,av,ca)
+      cantF := 0
+      repetir ancho
+        juntarFlores(cantF)
+        mover
+      derecha
+      total := total + cantF
+      av := PosAv
+      ca := PosCa
+      depositar(cantF,av,ca)
+    EnviarMensaje(id,coordinador)
+    EnviarMensaje(total,coordinador)
+  fin
+  robot tipoCoordinador
+  variables
+    id, cant, idMax, cantMax, ancho, alto : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    Random(alto,1,10)
+    Random(ancho,1,5)
+    EnviarMensaje(alto,r1)
+    EnviarMensaje(ancho,r1)
+    Random(alto,1,10)
+    Random(ancho,1,5)
+    EnviarMensaje(alto,r2)
+    EnviarMensaje(ancho,r2)
+    Random(alto,1,10)
+    Random(ancho,1,5)
+    EnviarMensaje(alto,r3)
+    EnviarMensaje(ancho,r3)
+    cantMax := -1
+    repetir 3
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cant,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(cant,r2)
+        sino
+          RecibirMensaje(cant,r3)
+      si (cant > cantMax)
+        cantMax := cant
+        idMax := id
+    si (cantMax = 0)
+      Informar('hubo_empate',0)
+    sino
+      Informar('el_que_junto_mas_flores_fue_r',idMax)
+  fin
+variables
+  r1,r2,r3 : tipoRecolector
+  coordinador : tipoCoordinador
+comenzar
+  AsignarArea(r1,areaDeposito)
+  AsignarArea(r2,areaDeposito)
+  AsignarArea(r3,areaDeposito)
+  AsignarArea(r1,areaR1)
+  AsignarArea(r2,areaR2)
+  AsignarArea(r3,areaR3)
+  AsignarArea(coordinador,areaCoordinador)
+  Iniciar(r1,1,1)
+  Iniciar(r2,7,1)
+  Iniciar(r3,13,1)
+  Iniciar(coordinador,24,24)
+fin

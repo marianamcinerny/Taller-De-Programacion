@@ -1,0 +1,141 @@
+programa ejercicio4
+procesos
+  proceso limpiar (ES cant : numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cant := cant + 1
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cant := cant + 1
+  fin
+  proceso enviarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso enviarAcceso
+  variables
+    id : numero
+    ok : boolean
+  comenzar
+    ok := V
+    Random(id,1,4)
+    si (id = 1)
+      EnviarMensaje(ok,r1)
+    sino
+      si (id = 2)
+        EnviarMensaje(ok,r2)
+      sino
+        si (id = 3)
+          EnviarMensaje(ok,r3)
+        sino
+          EnviarMensaje(ok,r4)
+  fin
+  proceso desactivar
+  variables
+    ok : boolean
+  comenzar
+    ok := F
+    EnviarMensaje(ok,r1)
+    EnviarMensaje(ok,r2)
+    EnviarMensaje(ok,r3)
+    EnviarMensaje(ok,r4)
+  fin
+  proceso avisarGanador (E idGanador : numero)
+  comenzar
+    EnviarMensaje(idGanador,r1)
+    EnviarMensaje(idGanador,r2)
+    EnviarMensaje(idGanador,r3)
+    EnviarMensaje(idGanador,r4)
+  fin
+  proceso indicarGanador
+  variables
+    idGanador, cantMax, id, cant : numero
+  comenzar
+    cantMax := 0
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cant,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(cant,r2)
+        sino
+          si (id = 3)
+            RecibirMensaje(cant,r3)
+          sino
+            RecibirMensaje(cant,r4)
+      si (cant > cantMax)
+        cantMax := cant
+        idGanador := id
+    avisarGanador(idGanador)
+  fin
+areas
+  areaComun : AreaPC(25,25,75,75)
+  areaR1 : AreaP(25,1,25,1)
+  areaR2 : AreaP(30,1,30,1)
+  areaR3 : AreaP(35,1,35,1)
+  areaR4 : AreaP(40,1,40,1)
+  areaF : AreaP(1,1,1,1)
+robots
+  robot recolector
+  variables
+    id,caO,avO,caR,avR,cant,idGanador : numero
+    activar,listo : boolean
+  comenzar
+    cant := 0
+    RecibirMensaje(id,fiscal)
+    caO := PosCa
+    avO := PosAv
+    RecibirMensaje(activar,fiscal)
+    mientras (activar = V)
+      Random(caR,25,75)
+      Random(avR,25,75)
+      Pos(avR,caR)
+      limpiar(cant)
+      Pos(avO,caO)
+      listo := V
+      EnviarMensaje(listo,fiscal)
+      RecibirMensaje(activar,fiscal)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(cant,fiscal)
+    RecibirMensaje(idGanador,fiscal)
+    si (idGanador = id)
+      Pos(50,50)
+  fin
+  robot fiscalizador
+  variables
+    listo : boolean
+  comenzar
+    enviarID
+    repetir 10
+      enviarAcceso
+      RecibirMensaje(listo,*)
+    desactivar
+    indicarGanador
+  fin
+variables
+  r1 : recolector
+  r2 : recolector
+  r3 : recolector
+  r4 : recolector
+  fiscal : fiscalizador
+comenzar
+  AsignarArea(r1,areaR1)
+  AsignarArea(r1,areaComun)
+  AsignarArea(r2,areaR2)
+  AsignarArea(r2,areaComun)
+  AsignarArea(r3,areaR3)
+  AsignarArea(r3,areaComun)
+  AsignarArea(r4,areaR4)
+  AsignarArea(r4,areaComun)
+  AsignarArea(fiscal,areaF)
+  Iniciar(r1,25,1)
+  Iniciar(r2,30,1)
+  Iniciar(r3,35,1)
+  Iniciar(r4,40,1)
+  Iniciar(fiscal,1,1)
+fin

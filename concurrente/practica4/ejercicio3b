@@ -1,0 +1,73 @@
+programa ejercicio3b
+procesos 
+  proceso sincronizar (E id : numero; E estado : boolean; ES estado1 : boolean; ES estado2 : boolean)
+  comenzar
+    si (id = 1)
+      EnviarMensaje(estado,r2)
+      EnviarMensaje(estado,r3)
+    sino
+      si (id = 2)
+        EnviarMensaje(estado,r1)
+        EnviarMensaje(estado,r3)
+      sino
+        EnviarMensaje(estado,r1)
+        EnviarMensaje(estado,r2)
+    RecibirMensaje(estado1,*)
+    RecibirMensaje(estado2,*)
+  fin
+areas
+  areaLimpiador1 : AreaP(1,1,1,100)
+  areaLimpiador2 : AreaP(2,1,2,100)
+  areaLimpiador3 : AreaP(3,1,3,100)
+  areaCoordinador : AreaP(4,1,4,1)
+robots
+  robot tipoLimpiador
+  variables
+    papeles, id, cantP : numero
+    estado, estado1, estado2 : boolean
+  comenzar
+    estado := V
+    cantP := 0
+    RecibirMensaje(id,coordinador)
+    sincronizar(id,estado,estado1,estado2)
+    mientras ((PosCa < 100) & ((estado1 & estado2) = V))
+      Random(papeles,1,5)
+      mientras (HayPapelEnLaEsquina)
+        mientras ((cantP < papeles) & (HayPapelEnLaEsquina))
+          tomarPapel
+          cantP := cantP + 1
+        si (cantP = papeles)
+          sincronizar(id,estado,estado1,estado2)
+          cantP := 0
+          Random(papeles,1,5)
+      mover
+    mientras (HayPapelEnLaEsquina)
+      mientras (cantP < papeles)
+        tomarPapel
+        cantP := cantP + 1
+        si (cantP = papeles)
+          sincronizar(id,estado,estado1,estado2)
+          cantP := 0
+          Random(papeles,1,5)
+    estado := F
+    sincronizar(id,estado,estado1,estado2)
+  fin
+  robot tipoCoordinador
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+variables
+  r1,r2,r3 : tipoLimpiador
+  coordinador : tipoCoordinador
+comenzar
+  AsignarArea(r1,areaLimpiador1)
+  AsignarArea(r2,areaLimpiador2)
+  AsignarArea(r3,areaLimpiador3)
+  AsignarArea(coordinador,areaCoordinador)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+  Iniciar(coordinador,4,1)
+fin

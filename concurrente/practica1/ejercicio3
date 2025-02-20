@@ -1,0 +1,75 @@
+programa ejercicio3
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso depositarTodo
+  comenzar
+    mientras (HayPapelEnLaBolsa)
+      depositarPapel
+    mientras (HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso caminar (ES cantF : numero; ES cantP : numero)
+  comenzar
+    juntarFlores(cantF)
+    juntarPapeles(cantP)
+    depositarTodo
+    mover
+  fin
+  proceso escalon(E pasos : numero; ES cantF : numero; ES cantP : numero)
+  comenzar
+    repetir pasos
+      caminar (cantF,cantP)
+    derecha
+    repetir pasos
+      caminar(cantF,cantP)
+    izquierda
+  fin
+areas
+  area : AreaPC (12,6,32,24)
+robots
+  robot tipo1
+  variables
+    pasos : numero
+    cantEsc : numero
+    cantF : numero
+    cantP : numero
+  comenzar
+    pasos := 1
+    cantEsc := 0
+    repetir 4
+      cantF := 0
+      cantP := 0
+      escalon(pasos,cantF,cantP)
+      pasos := pasos + 1
+      si (cantP = (cantF + 1) )
+        cantEsc := cantEsc + 1
+    Informar('cant_esc_papeles_sup_uno_flores',cantEsc)
+  fin
+variables
+  r1 : tipo1
+  r2 : tipo1
+  r3 : tipo1
+comenzar
+  AsignarArea(r1,area)
+  AsignarArea(r2,area)
+  AsignarArea(r3,area)
+  Iniciar(r1,22,6)
+  Iniciar(r2,17,10)
+  Iniciar(r3,12,14)
+fin

@@ -1,0 +1,58 @@
+programa ejercicio1
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso limpiarAvenida (ES cantF : numero)
+  comenzar
+    cantF := 0
+    repetir 9
+      juntarFlores(cantF)
+      mover
+    juntarFlores(cantF)
+  fin
+  proceso definirGanador (E cantF : numero; E cantFOtro : numero)
+  variables
+    aux : numero
+  comenzar
+    aux := cantF - cantFOtro
+    si (aux > 0)
+      Informar('diferencia_con_el_perdedor',aux)
+    sino
+      si (aux = 0)
+        Informar('empate',aux)
+  fin
+areas
+  area1 : AreaP(1,1,1,10)
+  area2 : AreaP(2,11,2,20)
+robots
+  robot tipo1
+  variables
+    cantF, cantFOtro : numero
+  comenzar
+    limpiarAvenida(cantF)
+    EnviarMensaje(cantF,juntador2)
+    RecibirMensaje(cantFOtro,juntador2)
+    definirGanador(cantF,cantFOtro)
+  fin
+  robot tipo2
+  variables
+    cantF, cantFOtro : numero
+  comenzar
+    limpiarAvenida(cantF)
+    EnviarMensaje(cantF,juntador1)
+    RecibirMensaje(cantFOtro,juntador1)
+    definirGanador(cantF,cantFOtro)
+  fin
+variables
+  juntador1 : tipo1
+  juntador2 : tipo2
+comenzar
+  AsignarArea(juntador1,area1)
+  AsignarArea(juntador2,area2)
+  Iniciar(juntador1,1,1)
+  Iniciar(juntador2,2,11)
+fin

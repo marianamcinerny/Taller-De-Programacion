@@ -1,0 +1,103 @@
+programa ejercicio1d
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso limpiarAvenida(ES cantF : numero)
+  comenzar
+    cantF := 0
+    repetir 9
+      juntarFlores(cantF)
+      mover
+    juntarFlores(cantF)
+  fin
+  proceso definirGanador(ES idGanador : numero; ES cantMax : numero)
+  variables
+    id, cantF : numero
+  comenzar
+    idGanador := 0
+    cantMax := -1
+    repetir 6
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cantF,juntador1)
+      sino
+        si (id = 2)
+          RecibirMensaje(cantF,juntador2)
+        sino
+          si (id = 3)
+            RecibirMensaje(cantF,juntador3)
+          sino
+            si (id = 4)
+              RecibirMensaje(cantF,juntador4)
+            sino
+              si (id = 5)
+                RecibirMensaje(cantF,juntador5)
+              sino
+                RecibirMensaje(cantF,juntador6)
+      si (cantF > cantMax)
+        cantMax := cantF
+        idGanador := id
+  fin
+areas
+  area1 : AreaP(1,1,1,10)
+  area2 : AreaP(2,11,2,20)
+  area3 : AreaP(3,21,3,30)
+  area4 : AreaP(4,31,4,40)
+  area5 : AreaP(5,41,5,50)
+  area6 : AreaP(6,51,6,60)
+  areaF : AreaP(2,1,2,1)
+robots
+  robot juntador
+  variables
+    cantF, id : numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    limpiarAvenida(cantF)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(cantF,fiscal)
+  fin
+  robot fiscalizador
+  variables
+    idGanador, cantMax : numero
+  comenzar
+    EnviarMensaje(1,juntador1)
+    EnviarMensaje(2,juntador2)
+    EnviarMensaje(3,juntador3)
+    EnviarMensaje(4,juntador4)
+    EnviarMensaje(5,juntador5)
+    EnviarMensaje(6,juntador6)
+    definirGanador(idGanador,cantMax)
+    si (cantMax = 0)
+      Informar('hubo_empate',cantMax)
+    sino
+      Informar('gano_el_juntador',idGanador)
+      Informar('cantidad_de_flores_que_junto_el_ganador',cantMax)
+  fin
+variables
+  juntador1 : juntador
+  juntador2 : juntador
+  juntador3 : juntador
+  juntador4 : juntador
+  juntador5 : juntador
+  juntador6 : juntador
+  fiscal : fiscalizador
+comenzar
+  AsignarArea(juntador1,area1)
+  AsignarArea(juntador2,area2)
+  AsignarArea(juntador3,area3)
+  AsignarArea(juntador4,area4)
+  AsignarArea(juntador5,area5)
+  AsignarArea(juntador6,area6)
+  AsignarArea(fiscal,areaF)
+  Iniciar(juntador1,1,1)
+  Iniciar(juntador2,2,11)
+  Iniciar(juntador3,3,21)
+  Iniciar(juntador4,4,31)
+  Iniciar(juntador5,5,41)
+  Iniciar(juntador6,6,51)
+  Iniciar(fiscal,2,1)
+fin

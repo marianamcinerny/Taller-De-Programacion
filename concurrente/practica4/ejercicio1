@@ -1,0 +1,106 @@
+programa ejercicio1
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso depositar
+  comenzar
+    mientras ((PosCa < 100) & (HayFlorEnLaBolsa))
+      depositarFlor
+      mover
+  fin
+areas
+  areaServidor : AreaP(100,100,100,100)
+  areaCliente1 : AreaPC(1,1,1,100)
+  areaCliente2 : AreaPC(2,1,2,100)
+  areaCliente3 : AreaPC(3,1,3,100)
+robots
+  robot tipoCliente
+  variables
+    id,cantF,avS,caS : numero
+    listo : boolean
+  comenzar
+    RecibirMensaje(id,servidor)
+    avS := PosAv
+    mientras (PosCa < 100)
+      Random(cantF,1,4)
+      caS := PosCa + 1
+      EnviarMensaje(id,servidor)
+      EnviarMensaje(cantF,servidor)
+      EnviarMensaje(avS,servidor)
+      EnviarMensaje(caS,servidor)
+      RecibirMensaje(listo,servidor)
+      mover
+      juntarFlores
+      Pos(avS,(caS-1))
+      depositar
+    si (PosCa = 100)
+      si (HayFlorEnLaBolsa)
+        depositarFlor
+      EnviarMensaje(id,servidor)
+      EnviarMensaje(0,servidor)
+  fin
+  robot tipoServidor
+  variables
+    id,terminaron,ca,av,cantF : numero
+    servir,listo : boolean
+  comenzar
+    EnviarMensaje(1,c1)
+    EnviarMensaje(2,c2)
+    EnviarMensaje(3,c3)
+    servir := V
+    terminaron := 0
+    mientras (servir = V)
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cantF,c1)
+        si (cantF <> 0)
+          RecibirMensaje(av,c1)
+          RecibirMensaje(ca,c1)
+      sino
+        si (id = 2)
+          RecibirMensaje(cantF,c2)
+          si (cantF <> 0)
+            RecibirMensaje(av,c2)
+            RecibirMensaje(ca,c2)
+        sino
+          RecibirMensaje(cantF,c3)
+          si (cantF <> 0)
+            RecibirMensaje(av,c3)
+            RecibirMensaje(ca,c3)
+      si (cantF = 0)
+        terminaron := terminaron + 1
+        si (terminaron = 3)
+          servir := F
+      sino
+        Pos(av,ca)
+        repetir cantF
+          depositarFlor
+        Pos(100,100)
+        listo := V     
+        si (id = 1)
+          EnviarMensaje(listo,c1)
+        sino
+          si (id = 2)
+            EnviarMensaje(listo,c2)
+          sino
+            EnviarMensaje(listo,c3)   
+  fin
+variables
+  c1,c2,c3 : tipoCliente
+  servidor : tipoServidor
+comenzar
+  AsignarArea(c1,areaCliente1)
+  AsignarArea(c2,areaCliente2)
+  AsignarArea(c3,areaCliente3)
+  AsignarArea(servidor,areaServidor)
+  AsignarArea(servidor,areaCliente1)
+  AsignarArea(servidor,areaCliente2)
+  AsignarArea(servidor,areaCliente3)
+  Iniciar(c1,1,1)
+  Iniciar(c2,2,1)
+  Iniciar(c3,3,1)
+  Iniciar(servidor,100,100)
+fin

@@ -1,0 +1,117 @@
+programa ejercicio1
+procesos
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+areas
+  areaR1 : AreaP(2,1,2,100)
+  areaR2 : AreaP(3,1,3,100)
+  areaA1 : AreaP(1,98,100,98)
+  areaA2 : AreaP(1,99,100,99)
+  areaFiscal : AreaP(1,1,1,1)
+robots
+  robot tipoFlorero
+  variables
+    id, cantF : numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    cantF := 0
+    repetir 96
+      juntarFlores(cantF)
+      mover
+    BloquearEsquina(PosAv,(PosCa+1))
+    mover
+    juntarFlores(cantF)
+    BloquearEsquina(PosAv,(PosCa+1))
+    mover
+    LiberarEsquina(PosAv,(PosCa-1))
+    juntarFlores(cantF)
+    mover
+    LiberarEsquina(PosAv,(PosCa-1))
+    juntarFlores(cantF)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(cantF,fiscal)
+  fin
+  robot tipoPapelero
+  variables
+    id, cantP : numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    cantP := 0
+    derecha
+    juntarPapeles(cantP)
+    BloquearEsquina((PosAv+1),PosCa)
+    mover
+    juntarPapeles(cantP)
+    BloquearEsquina((PosAv+1),PosCa)
+    mover
+    LiberarEsquina((PosAv-1),PosCa)
+    juntarPapeles(cantP)
+    mover
+    LiberarEsquina((PosAv-1),PosCa)
+    repetir 96
+      juntarPapeles(cantP)
+      mover
+    juntarPapeles(cantP)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(cantP,fiscal)
+  fin
+  robot tipoFiscal
+  variables
+    id, cantFTotal, cantPTotal, cantF, cantP : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,a1)
+    EnviarMensaje(4,a2)
+    cantFTotal := 0
+    cantPTotal := 0
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cantF,r1)
+        cantFTotal := cantFTotal + cantF
+      sino
+        si (id = 2)
+          RecibirMensaje(cantF,r2)
+          cantFTotal := cantFTotal + cantF
+        sino
+          si (id = 3)
+            RecibirMensaje(cantP,a1)
+            cantPTotal := cantPTotal + cantP
+          sino
+            RecibirMensaje(cantP,a2)
+            cantPTotal := cantPTotal + cantP
+    si (cantPTotal > cantFTotal)
+      Informar('gano_el_equipo_azul',cantPTotal)
+    sino
+      si (cantPTotal < cantFTotal)
+        Informar('gano_el_equipo_rojo',cantFTotal)
+      sino
+        Informar('hubo_empate',0)
+  fin
+variables
+  r1, r2 : tipoFlorero
+  a1, a2 : tipoPapelero
+  fiscal : tipoFiscal
+comenzar
+  AsignarArea(fiscal,areaFiscal)
+  AsignarArea(r1,areaR1)
+  AsignarArea(r2,areaR2)
+  AsignarArea(a1,areaA1)
+  AsignarArea(a2,areaA2)
+  Iniciar(fiscal,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,3,1)
+  Iniciar(a1,1,98)
+  Iniciar(a2,1,99)
+fin

@@ -1,0 +1,114 @@
+programa parcial5
+procesos
+  proceso limpiar
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+    mientras (HayPapelEnLaEsquina)
+      tomarFlor
+  fin
+  proceso cuadradoI (E avB : numero)
+  comenzar
+    repetir 3
+      limpiar
+      mover
+    limpiar
+    BloquearEsquina(avB,11)
+    mover
+    limpiar
+    derecha
+    mover
+    LiberarEsquina(avB,11)
+    repetir 3
+      limpiar
+      mover
+    derecha
+    repetir 2
+      repetir 4
+        limpiar
+        mover
+      derecha
+  fin
+  proceso cuadradoS (E avB : numero)
+  comenzar
+    repetir 2
+      repetir 4
+        limpiar
+        mover
+      derecha
+    repetir 3
+      limpiar
+      mover
+    BloquearEsquina(avB,11)
+    mover
+    limpiar
+    derecha
+    mover
+    LiberarEsquina(avB,11)
+    repetir 3
+      limpiar
+      mover
+    derecha
+  fin
+areas
+  areaLimpieza : AreaPC(5,7,33,15)
+  areaFiscal : AreaP(1,1,1,1)
+  areaRS : AreaP(2,2,2,2)
+  areaRI : AreaP(3,3,3,3)
+robots
+  robot tipoRecolector
+  variables
+    id, avC, caC, avB : numero
+    ok : boolean
+  comenzar
+    RecibirMensaje(id,fiscal)
+    si (id = 1)
+      avC := 5
+      caC := 11
+    sino
+      avC := 9
+      caC := 7
+    avB := 9
+    repetir 3
+      RecibirMensaje(ok,fiscal)
+      Pos(avC,caC)
+      si (id = 1)
+        cuadradoS(avB)
+      sino
+        cuadradoI(avB)
+      EnviarMensaje(id,fiscal)
+      avC := avC + 10
+      avB := avB + 10
+  fin
+  robot tipoFiscal
+  variables
+    id, primero : numero
+    ok : boolean
+  comenzar
+    EnviarMensaje(1,rs)
+    EnviarMensaje(2,ri)
+    ok := V
+    primero := 0
+    repetir 3
+      EnviarMensaje(ok,ri)
+      EnviarMensaje(ok,rs)
+      repetir 2
+        RecibirMensaje(id,*)
+        si (primero = 0)
+          primero := id
+      Informar('termino_primero',primero)
+      primero := 0
+  fin
+variables
+  rs,ri : tipoRecolector
+  fiscal : tipoFiscal
+comenzar
+  AsignarArea(rs,areaLimpieza)
+  AsignarArea(ri,areaLimpieza)
+  AsignarArea(rs,areaRS)
+  AsignarArea(ri,areaRI)
+  AsignarArea(fiscal,areaFiscal)
+  Iniciar(rs,2,2)
+  Iniciar(ri,3,3)
+  Iniciar(fiscal,1,1)
+fin

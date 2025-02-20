@@ -1,0 +1,129 @@
+programa parcial0
+procesos
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+areas
+  areaDepositoP : AreaPC(50,50,50,50)
+  areaDepositoF : AreaPC(49,49,49,49)
+  areaP1 : AreaP(50,1,66,9)
+  areaP2 : AreaP(50,20,66,28)
+  areaF1 : AreaP(35,1,49,8)
+  areaF2 : AreaP(35,20,49,27)
+  areaFiscal : AreaP(1,1,1,1)
+robots
+  robot tipoPapelero
+  variables
+    id, cantP, medida, av, ca : numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    cantP := 0
+    Random(medida,4,8)
+    repetir medida
+      juntarPapeles(cantP)
+      mover
+    derecha
+    repetir (medida * 2)
+      juntarPapeles(cantP)
+      mover
+    juntarPapeles(cantP)
+    av := PosAv
+    ca := PosCa
+    repetir cantP
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+    EnviarMensaje(id,fiscal)
+  fin
+  robot tipoFlorero
+  variables
+    id, cantF, medida, av, ca : numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    cantF := 0
+    Random(medida,3,7)
+    repetir medida
+      juntarFlores(cantF)
+      mover
+    izquierda
+    repetir (medida * 2)
+      juntarFlores(cantF)
+      mover
+    juntarFlores(cantF)
+    av := PosAv
+    ca := PosCa
+    repetir cantF
+      BloquearEsquina(49,49)
+      Pos(49,49)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(49,49)
+    EnviarMensaje(id,fiscal)
+  fin
+  robot tipoFiscal
+  variables
+    id, cantF, cantP, eF, eP : numero
+  comenzar
+    EnviarMensaje(1,p1)
+    EnviarMensaje(2,p2)
+    EnviarMensaje(3,f1)
+    EnviarMensaje(4,f2)
+    cantF := 0
+    cantP := 0
+    eF := 0
+    eP := 0
+    repetir 4
+      RecibirMensaje(id,*)
+      si ((id = 1) | (id = 2))
+        eP := eP + 1
+        si (eP = 2)
+          Pos(50,50)
+          juntarPapeles(cantP)
+          Pos(1,1)
+      sino
+        eF := eF + 1
+        si (eF = 2)
+          Pos(49,49)
+          juntarFlores(cantF)
+          Pos(1,1)
+    Informar('papeles_juntados_por_los_papeleros',cantP)
+    Informar('flores_juntadas_por_los_floreros',cantF)
+  fin
+variables
+  p1,p2 : tipoPapelero
+  f1,f2 : tipoFlorero
+  fiscal : tipoFiscal
+comenzar
+  AsignarArea(fiscal,areaFiscal)
+  AsignarArea(fiscal,areaDepositoP)
+  AsignarArea(fiscal,areaDepositoF)
+  AsignarArea(p1,areaDepositoP)
+  AsignarArea(p2,areaDepositoP)
+  AsignarArea(f1,areaDepositoF)
+  AsignarArea(f2,areaDepositoF)
+  AsignarArea(p1,areaP1)
+  AsignarArea(p2,areaP2)
+  AsignarArea(f1,areaF1)
+  AsignarArea(f2,areaF2)
+  Iniciar(fiscal,1,1)
+  Iniciar(p1,50,1)
+  Iniciar(p2,50,20)
+  Iniciar(f1,49,1)
+  Iniciar(f2,49,20)
+fin

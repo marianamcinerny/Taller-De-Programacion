@@ -1,0 +1,130 @@
+programa ejercicio3bDefinitivo
+procesos
+  proceso juntarPapeles (ES cantP : numero; E papeles : numero)
+  comenzar
+    mientras ((HayPapelEnLaEsquina) & (cantP < papeles))
+      tomarPapel
+      cantP := cantP + 1
+  fin
+areas
+  areaR1 : AreaP(1,1,1,100)
+  areaR2 : AreaP(2,1,2,100)
+  areaR3 : AreaP(3,1,3,100)
+  areaCoordinador : AreaP(4,1,4,1)
+robots
+  robot tipoPapelero
+  variables
+    id, papeles, cantP : numero
+    estado, estado1, estado2 : boolean
+  comenzar
+    RecibirMensaje(id,coordinador)
+    estado := V
+    {sincronizar}
+    si (id = 1)
+      EnviarMensaje(estado,r2)
+      EnviarMensaje(estado,r3)
+    sino
+      si (id = 2)
+        EnviarMensaje(estado,r1)
+        EnviarMensaje(estado,r3)
+      sino
+        EnviarMensaje(estado,r1)
+        EnviarMensaje(estado,r2)
+    RecibirMensaje(estado1,*)
+    RecibirMensaje(estado2,*)
+    {fin de la sincronizacion}
+    Random(papeles,1,5)
+    cantP := 0
+    mientras (PosCa < 100)
+      juntarPapeles(cantP,papeles)
+      si (cantP = papeles)
+        {sincronizar}
+        si (id = 1)
+          EnviarMensaje(estado,r2)
+          EnviarMensaje(estado,r3)
+        sino
+          si (id = 2)
+            EnviarMensaje(estado,r1)
+            EnviarMensaje(estado,r3)
+          sino
+            EnviarMensaje(estado,r1)
+            EnviarMensaje(estado,r2)
+        RecibirMensaje(estado1,*)
+        RecibirMensaje(estado2,*)
+        {fin de la sincronizacion}
+        cantP := 0
+        Random(papeles,1,5)
+      sino
+        mover
+    mientras (HayPapelEnLaEsquina)
+      jutarPapeles(cantP,papeles)
+      si (cantP = papeles)
+        {sincronizar}
+        si (id = 1)
+          EnviarMensaje(estado,r2)
+          EnviarMensaje(estado,r3)
+        sino
+          si (id = 2)
+            EnviarMensaje(estado,r1)
+            EnviarMensaje(estado,r3)
+          sino
+            EnviarMensaje(estado,r1)
+            EnviarMensaje(estado,r2)
+        RecibirMensaje(estado1,*)
+        RecibirMensaje(estado2,*)
+        {fin de la sincronizacion}
+        cantP := 0
+        Random(papeles,1,5)
+    estado := F
+    {sincronizar}
+    si (id = 1)
+      EnviarMensaje(estado,r2)
+      EnviarMensaje(estado,r3)
+    sino
+      si (id = 2)
+        EnviarMensaje(estado,r1)
+        EnviarMensaje(estado,r3)
+      sino
+        EnviarMensaje(estado,r1)
+        EnviarMensaje(estado,r2)
+    {fin de la sincronizacion}
+    {sincronizacion fuera del mientras porque si un robot junta papeles y los}
+    {otros no juntaron nunca, los otros ya van a enviar su estado en falso y}
+    {el robot que si junto no entraria nunca en el mientras porque ambos estados}
+    {serian falsos, por lo que los robots que terminaron primero nunca van a recibir}
+    {el F del robot que si junto porque no sincronizaria dentro del mientras}
+    mientras ((estado1 | estado2))
+      {sincronizar}
+      si (id = 1)
+        EnviarMensaje(estado,r2)
+        EnviarMensaje(estado,r3)
+      sino
+        si (id = 2)
+          EnviarMensaje(estado,r1)
+          EnviarMensaje(estado,r3)
+        sino
+          EnviarMensaje(estado,r1)
+          EnviarMensaje(estado,r2)
+      RecibirMensaje(estado1,*)
+      RecibirMensaje(estado2,*)
+      {fin de la sincronizacion}
+  fin
+  robot tipoCoordinador
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+variables
+  r1,r2,r3 : tipoPapelero
+  coordinador : tipoCoordinador
+comenzar
+  AsignarArea(r1,areaR1)
+  AsignarArea(r2,areaR2)
+  AsignarArea(r3,areaR3)
+  AsignarArea(coordinador,areaCoordinador)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+  Iniciar(coordinador,4,1)
+fin

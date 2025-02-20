@@ -1,0 +1,88 @@
+programa ejercicio1
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF  + 1
+  fin
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+areas
+  areaFloreros : AreaPC (1,1,5,10)
+  areaPapeleros : AreaPC (6,1,10,9)
+  areaDeposito : AreaC (10,10,10,10)
+  areaF1 : AreaP (6,10,6,10)
+  areaF2 : AreaP (7,10,7,10)
+  areaP1 : AreaP (8,10,8,10)
+  areaP2 : AreaP (9,10,9,10)
+robots
+  robot tipoFlorero
+  variables
+    avO, caO, avR, caR, cantF : numero
+  comenzar
+    avO := PosAv
+    caO := PosCa
+    cantF := 0
+    repetir 5
+      Random(avR,1,5)
+      Random(caR,1,10)
+      BloquearEsquina(avR,caR)
+      Pos(avR,caR)
+      juntarFlores(cantF)
+      Pos(avO,caO)
+      LiberarEsquina(avR,caR)
+    repetir cantF
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarFlor
+      Pos(avO,caO)
+      LiberarEsquina(10,10)
+  fin
+  robot tipoPapelero
+  variables
+    avO, caO, avR, caR, cantP : numero
+  comenzar
+    avO := PosAv
+    caO := PosCa
+    cantP := 0
+    repetir 3
+      Random(avR,6,10)
+      Random(caR,1,9)
+      BloquearEsquina(avR,caR)
+      Pos(avR,caR)
+      juntarPapeles(cantP)
+      Pos(avO,caO)
+      LiberarEsquina(avR,caR)
+    repetir cantP
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarPapel
+      Pos(avO,caO)
+      LiberarEsquina(10,10)
+  fin
+variables
+  f1, f2 : tipoFlorero
+  p1, p2 : tipoPapelero
+comenzar
+  AsignarArea(f1,areaFloreros)
+  AsignarArea(f1,areaDeposito)
+  AsignarArea(f1,areaF1)
+  AsignarArea(f2,areaFloreros)
+  AsignarArea(f2,areaDeposito)
+  AsignarArea(f2,areaF2)
+  AsignarArea(p1,areaPapeleros)
+  AsignarArea(p1,areaDeposito)
+  AsignarArea(p1,areaP1)
+  AsignarArea(p2,areaPapeleros)
+  AsignarArea(p2,areaDeposito)
+  AsignarArea(p2,areaP2)
+  Iniciar(f1,6,10)
+  Iniciar(f2,7,10)
+  Iniciar(p1,8,10)
+  Iniciar(p2,9,10)
+fin

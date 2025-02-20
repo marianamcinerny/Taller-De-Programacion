@@ -1,0 +1,84 @@
+programa parcial11
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+areas
+  areaCuadrante : AreaPC(10,10,30,30)
+  areaR1 : AreaP(1,1,1,1)
+  areaR2 : AreaP(2,1,2,1)
+  areaR3 : AreaP(3,1,3,1)
+  areaFiscal : AreaP(9,9,9,9)
+robots
+  robot tipoRecolector
+  variables
+    id, intentos, avO, caO, avR, caR : numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    Random(intentos,2,5)
+    avO := PosAv
+    caO := PosCa
+    repetir intentos
+      EnviarMensaje(id,fiscal)
+      RecibirMensaje(avR,fiscal)
+      RecibirMensaje(caR,fiscal)
+      BloquearEsquina(avR,caR)
+      Pos(avR,caR)
+      juntarFlores
+      Pos(avO,caO)
+      LiberarEsquina(avR,caR)
+    EnviarMensaje(0,fiscal)
+  fin
+  robot tipoFiscal
+  variables
+    id, intentos, avR, caR, cantFin : numero
+    enviar : boolean
+  comenzar
+    intentos := 0
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    enviar := V
+    cantFin := 0
+    mientras (enviar)
+      Random(avR,10,30)
+      Random(caR,10,30)
+      RecibirMensaje(id,*)
+      si (id = 1)
+        EnviarMensaje(avR,r1)
+        EnviarMensaje(caR,r1)
+        intentos := intentos + 1
+      sino
+        si (id = 2)
+          EnviarMensaje(avR,r2)
+          EnviarMensaje(avR,r2)
+          intentos := intentos + 1
+        sino
+          si (id = 3)
+            EnviarMensaje(avR,r3)
+            EnviarMensaje(caR,r3)
+            intentos := intentos + 1
+          sino
+            cantFin := cantFin + 1
+            si (cantFin = 3)
+              enviar := F
+    Informar('cantidad_de_intentos_realizados',intentos)
+  fin
+variables
+  r1,r2,r3 : tipoRecolector
+  fiscal : tipoFiscal
+comenzar
+  AsignarArea(r1,areaCuadrante)
+  AsignarArea(r2,areaCuadrante)
+  AsignarArea(r3,areaCuadrante)
+  AsignarArea(fiscal,areaFiscal)
+  AsignarArea(r1,areaR1)
+  AsignarArea(r2,areaR2)
+  AsignarArea(r3,areaR3)
+  Iniciar(fiscal,9,9)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+fin

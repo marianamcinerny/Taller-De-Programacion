@@ -1,0 +1,136 @@
+programa ejercicio2OtraForma
+procesos
+  proceso juntarFlores (ES cantF : numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF := cantF + 1
+  fin
+  proceso juntarPapeles (ES cantP : numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantP := cantP + 1
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso giro180
+  comenzar
+    repetir 2
+      derecha
+  fin
+  proceso escalonFlores (E medida : numero; ES cantF : numero)
+  comenzar
+    juntarFlores(cantF)
+    repetir medida
+      mover
+    derecha
+    juntarFlores(cantF)
+    repetir medida
+      mover
+    izquierda
+    juntarFlores(cantF)
+  fin
+  proceso escalonPapeles (E medida : numero; ES cantP : numero)
+  comenzar
+    juntarPapeles(cantP)
+    repetir medida
+      mover
+    izquierda
+    juntarPapeles(cantP)
+    repetir medida
+      mover
+    derecha
+    juntarPapeles(cantP)
+  fin
+areas
+  areaFlorero : AreaP(1,1,15,30)
+  areaPapelero : AreaP(17,1,31,30)
+  areaComun : AreaPC(16,16,16,16)
+  areaJefe : AreaP(16,1,16,1)
+robots
+  robot tipoFlorero
+  variables
+    cantF,id,medida : numero
+    listo : boolean
+  comenzar
+    RecibirMensaje(id,jefe)
+    cantF := 0
+    medida := 5
+    repetir 4
+      escalonFlores(medida,cantF)
+      medida := medida - 1
+    mover
+    derecha
+    BloquearEsquina(16,16)
+    mover
+    EnviarMensaje(id,jefe)
+    juntarFlores(cantF)
+    giro180
+    mover
+    LiberarEsquina(16,16)
+    repetir 4
+      medida := medida + 1
+      escalonFlores(medida,cantF)
+    listo := V
+    EnviarMensaje(listo,jefe)
+  fin
+  robot tipoPapelero
+  variables
+    cantP,id,medida : numero
+    listo : boolean
+  comenzar
+    RecibirMensaje(id,jefe)
+    cantP := 0
+    medida := 5
+    repetir 4
+      escalonPapeles(medida,cantP)
+      medida := medida -1
+    mover
+    izquierda
+    BloquearEsquina(16,16)
+    mover
+    EnviarMensaje(id,jefe)
+    juntarPapeles(cantP)
+    giro180
+    mover
+    LiberarEsquina(16,16)
+    repetir 4
+      medida := medida + 1
+      escalonPapeles(medida,cantP)
+    listo := V
+    EnviarMensaje(listo,jefe)
+  fin
+  robot tipoJefe
+  variables
+    id, ganador : numero
+    listo : boolean
+  comenzar
+    EnviarMensaje(1,florero)
+    EnviarMensaje(2,papelero)
+    ganador := 0
+    repetir 2
+      RecibirMensaje(id,*)
+      si (ganador = 0)
+        ganador := id
+    repetir 2
+      RecibirMensaje(listo,*)
+    Informar('llego_primero_r',ganador)
+  fin
+variables
+  florero : tipoFlorero
+  papelero : tipoPapelero
+  jefe : tipoJefe
+comenzar
+  AsignarArea(papelero,areaPapelero)
+  AsignarArea(papelero,areaComun)
+  AsignarArea(florero,areaFlorero)
+  AsignarArea(florero,areaComun)
+  AsignarArea(jefe,areaJefe)
+  Iniciar(florero,1,1)
+  Iniciar(papelero,31,1)
+  Iniciar(jefe,16,1)
+fin

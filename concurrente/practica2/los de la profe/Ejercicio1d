@@ -1,0 +1,105 @@
+{Ejercicio 1.c: 6 robots compiten para ver cuál junta más flores. 
+  Cada robot recoge todas las flores de su avenida.
+  Robot 1: Avenida 1, entre las calles 1 y 10
+  Robot 2: Avenida 2, entre las calles 11 y 20
+  Robot 3: Avenida 3, entre las calles 21 y 30
+  Robot 4: Avenida 4, entre las calles 31 y 40
+  Robot 5: Avenida 5, entre las calles 41 y 50
+  Robot 6: Avenida 6, entre las calles 51 y 60
+  El fiscalizador deberá informar *la cantidad de flores* que juntó el robot ganador.
+PENSAR MODIFICACION:
+Ejercicio 1.d: Modifique el inciso anterior para que ahora el fiscalizador informe *también, cuál fue el robot ganador.*
+}
+programa Ejercicio1d
+procesos
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores:= flores + 1
+  fin
+  
+  proceso recorreAvenida(ES totFlores: numero)
+  comenzar
+    repetir 9
+      juntarFlores(totFlores)
+      mover
+    juntarFlores(totFlores)
+  fin
+areas
+  areaR1: AreaP(1,1,1,10)    
+  areaR2: AreaP(2,11,2,20)  
+  areaR3: AreaP(3,21,3,30)
+  areaR4: AreaP(4,31,4,40)
+  areaR5: AreaP(5,41,5,50)  
+  areaR6: AreaP(6,51,6,60)
+  areaRF: AreaP(2,1,2,1)
+robots 
+  robot tipoJuntador
+  variables
+    totFlores: numero
+    id: numero
+  comenzar
+    RecibirMensaje(id,rF)       {MODIFICACION: cada robot debe saber quien es para luego enviar *id* y *total* al fiscal}
+    totFlores:= 0
+    recorreAvenida(totFlores)
+    {Informar('Junte',totFlores)}
+    EnviarMensaje(id,rF)        {MODIFICACION: envio *id* y total* al fiscal}
+    EnviarMensaje(totFlores,rF) 
+  fin
+  
+  robot tipoFiscal
+  variables
+    id,flo: numero
+    max,idmax: numero
+  comenzar
+    EnviarMensaje(1,r1)        {MODIFICACION: envia a cada robot un id}
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    EnviarMensaje(5,r5)
+    EnviarMensaje(6,r6)
+    max:= -1
+    repetir 6
+      RecibirMensaje(id, *)    {MODIFICACION: recibo el *id* de alguno listo y su *total*}
+      si (id = 1) 
+        RecibirMensaje(flo,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(flo,r2)
+        sino 
+          si (id = 3) 
+            RecibirMensaje(flo,r3)
+          sino
+            si (id = 4)
+              RecibirMensaje(flo,r4)
+            sino
+              si (id = 5) 
+                RecibirMensaje(flo,r5)
+              sino
+                RecibirMensaje(flo,r6)
+      si (flo > max) 
+        max:= flo
+        idmax:= id
+    Informar('El_ganador_es',idmax)
+    Informar('La_cant_juntada_por_ganador_es',max)
+  fin
+variables
+  r1,r2,r3,r4,r5,r6 : tipoJuntador
+  rF: tipoFiscal 
+comenzar
+  AsignarArea(r1,areaR1)    {Primero se hacen todos los AsignarArea, luego los Iniciar}
+  AsignarArea(r2,areaR2)
+  AsignarArea(r3,areaR3)
+  AsignarArea(r4,areaR4)    
+  AsignarArea(r5,areaR5)
+  AsignarArea(r6,areaR6)
+  AsignarArea(rF,areaRF)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,11)
+  Iniciar(r3,3,21)
+  Iniciar(r4,4,31)
+  Iniciar(r5,5,41)
+  Iniciar(r6,6,51)
+  Iniciar(rF,2,1)
+fin
